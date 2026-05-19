@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marco Antonio Chamorro — IA Práctica · Antigravity</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07080f;
+      --surface:   #0e1019;
+      --panel:     #131725;
+      --border:    rgba(0, 220, 180, 0.12);
+      --border-hi: rgba(0, 220, 180, 0.35);
+      --accent:    #00dcb4;
+      --accent2:   #5e6ef7;
+      --accent3:   #f7c35e;
+      --text:      #e2e8f0;
+      --muted:     #7889a4;
+      --glow:      0 0 24px rgba(0, 220, 180, 0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,220,180,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,220,180,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 460px; height: 460px; background: rgba(0,220,180,0.08); top: -100px; left: -120px; }
+    .orb-2 { width: 380px; height: 380px; background: rgba(94,110,247,0.09); bottom: -80px; right: -100px; animation-delay: -6s; }
+    .orb-3 { width: 260px; height: 260px; background: rgba(247,195,94,0.06); top: 40%; left: 55%; animation-delay: -3s; }
+    @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(30px, 20px) scale(1.06); } }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    header { padding: 72px 0 56px; position: relative; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,220,180,0.08);
+      border: 1px solid var(--border-hi);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      animation: fadeUp 0.7s ease 0.1s both;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 55%, var(--accent3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .intro {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 600px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.7s ease 0.2s both;
+    }
+    .intro strong { color: var(--text); font-weight: 500; }
+
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      animation: fadeUp 0.7s ease 0.3s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.22s ease;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 0 20px rgba(0,220,180,0.3);
+    }
+    .btn-primary:hover { background: #00f5c8; box-shadow: 0 0 32px rgba(0,220,180,0.45); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--border-hi);
+    }
+    .btn-outline:hover { background: rgba(0,220,180,0.07); border-color: var(--accent); transform: translateY(-2px); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin: 48px 0 64px;
+      animation: fadeUp 0.7s ease 0.4s both;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover { border-color: var(--border-hi); box-shadow: var(--glow); }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 1.2em;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2));
+      border-radius: 2px;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 320px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 14px 9px 36px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus { border-color: var(--border-hi); box-shadow: var(--glow); }
+
+    .count-tag {
+      font-size: 11px;
+      background: rgba(0,220,180,0.1);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 2px 10px;
+      border: 1px solid var(--border);
+    }
+
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 56px;
+      transition: box-shadow 0.3s;
+    }
+    .table-wrap:hover { box-shadow: var(--glow); }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      padding: 13px 20px;
+      text-align: left;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(0,220,180,0.05);
+      vertical-align: middle;
+      font-size: 13px;
+    }
+    tr:last-child td { border-bottom: none; }
+    tbody tr { transition: background 0.15s; }
+    tbody tr:hover { background: rgba(0,220,180,0.04); }
+
+    .proj-name {
+      font-weight: 500;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proj-emoji { font-size: 16px; }
+
+    .link-cell a {
+      color: var(--accent2);
+      text-decoration: none;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(94,110,247,0.25);
+      background: rgba(94,110,247,0.07);
+      transition: all 0.18s;
+    }
+    .link-cell a:hover { background: rgba(94,110,247,0.18); border-color: var(--accent2); transform: translateY(-1px); }
+
+    .deploy-link a {
+      color: var(--accent3);
+      border-color: rgba(247,195,94,0.25);
+      background: rgba(247,195,94,0.07);
+    }
+    .deploy-link a:hover { background: rgba(247,195,94,0.18); border-color: var(--accent3); }
+
+    .live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #4ade80;
+    }
+    .live-dot::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+    .empty-row td {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+    .anim-1 { animation-delay: 0.45s; }
+    .anim-2 { animation-delay: 0.55s; }
+
+    @media (max-width: 640px) {
+      th:nth-child(3), td:nth-child(3) { display: none; }
+      .section-head { flex-direction: column; align-items: flex-start; }
+      .search-wrap { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="wrapper">
+
+  <!-- ─── HERO ─── -->
+  <header>
+    <div class="badge">🚀 Alumno · Antigravity</div>
+    <h1>
+      <span style="color:#ffffff;">Hola, soy</span><br>
+      <span style="color:#ffffff;">Marco Antonio</span> 👋
+    </h1>
+    <p class="intro">
+      Soy <strong>Marco Antonio Chamorro Villoria</strong> y he sido alumno del curso
+      <strong>IA práctica para crear soluciones de negocio con Antigravity</strong>.
+      Aquí puedes explorar todos los proyectos que he desarrollado durante la formación 🛠️✨
+    </p>
+    <div class="hero-links">
+      <a class="btn btn-primary" href="https://github.com/Marconato78" target="_blank">
+        🐙 GitHub / Marconato78
+      </a>
+
+    </div>
+  </header>
+
+  <!-- ─── STATS ─── -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-projects">1</div>
+      <div class="stat-label">🗂️ Proyectos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-deploys">1</div>
+      <div class="stat-label">🌐 Despliegues</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">1</div>
+      <div class="stat-label">🎓 Curso completado</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">🤖 Ideas con IA</div>
+    </div>
+  </div>
+
+  <!-- ─── PROJECTS TABLE ─── -->
+  <div class="anim anim-1">
+    <div class="section-head">
+      <div class="section-title">🗂️ Proyectos del Curso</div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span class="count-tag" id="proj-count">1 proyecto</span>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="proj-search" type="text" placeholder="Buscar proyecto..." />
+        </div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre del proyecto</th>
+            <th>Enlace a GitHub</th>
+          </tr>
+        </thead>
+        <tbody id="proj-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── DEPLOYMENTS TABLE ─── -->
+  <div class="anim anim-2">
+    <div class="section-head">
+      <div class="section-title">🌐 Despliegues Activos</div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span class="count-tag" id="deploy-count">1 despliegue</span>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="deploy-search" type="text" placeholder="Buscar despliegue..." />
+        </div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Proyecto</th>
+            <th>URL activa</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="deploy-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <p>✨ Presentación de <strong>Marco Antonio Chamorro Villoria</strong> · Alumno de <a href="https://github.com/ksizorCode/Antigravity" target="_blank">IA Práctica · Antigravity</a></p>
+    <p style="margin-top:6px;">🐙 <a href="https://github.com/Marconato78" target="_blank">github.com/Marconato78</a> · Hecho con 💚 y mucha IA</p>
+  </footer>
+
+</div>
+
+<script>
+  const DATA = {
+    projects: [
+      { emoji: "⚓", name: "Blas de Lezo",         url: "https://github.com/Marconato78/st-Lezo" },
+      { emoji: "🎬", name: "Dataset de películas", url: "https://github.com/Marconato78/movies-dataset" },
+      { emoji: "🎫", name: "Tickets de soporte",   url: "https://github.com/Marconato78/support-tickets" },
+      { emoji: "📊", name: "Panel de PIB",          url: "https://github.com/Marconato78/gdp-dashboard" },
+    ],
+    deployments: [
+      { emoji: "⚓", name: "Blas de Lezo",         url: "https://st-lezo-2o66uycqbsn7mmfeps2xbz.streamlit.app/" },
+      { emoji: "🎬", name: "Dataset de películas", url: "https://movies-dataset-kq82jrxo6wb.streamlit.app/" },
+      { emoji: "🎫", name: "Tickets de soporte",   url: "https://support-tickets-vsx2yqt.streamlit.app/" },
+      { emoji: "📊", name: "Panel de PIB",          url: "https://gdp-dashboard-ynnq93kohik.streamlit.app/" },
+    ]
+  };
+
+  function shortUrl(url) {
+    return url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+  }
+
+  function highlight(text, query) {
+    if (!query) return text;
+    const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return text.replace(re, '<mark style="background:rgba(0,220,180,0.25);color:var(--accent);border-radius:3px;padding:0 2px;">$1</mark>');
+  }
+
+  function renderProjects(query = '') {
+    const tbody = document.getElementById('proj-tbody');
+    const filtered = DATA.projects.filter(p =>
+      p.name.toLowerCase().includes(query.toLowerCase()) ||
+      p.url.toLowerCase().includes(query.toLowerCase())
+    );
+    const n = filtered.length;
+    document.getElementById('proj-count').textContent = n + ' proyecto' + (n !== 1 ? 's' : '');
+
+    if (n === 0) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="3">😕 No se encontraron proyectos para "<strong>${query}</strong>"</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = filtered.map((p, i) => `
+      <tr>
+        <td style="color:var(--muted);width:40px;">${String(i+1).padStart(2,'0')}</td>
+        <td><span class="proj-name"><span class="proj-emoji">${p.emoji}</span>${highlight(p.name, query)}</span></td>
+        <td class="link-cell"><a href="${p.url}" target="_blank" rel="noopener">🔗 ${highlight(shortUrl(p.url), query)}</a></td>
+      </tr>
+    `).join('');
+  }
+
+  function renderDeployments(query = '') {
+    const tbody = document.getElementById('deploy-tbody');
+    const filtered = DATA.deployments.filter(d =>
+      d.name.toLowerCase().includes(query.toLowerCase()) ||
+      d.url.toLowerCase().includes(query.toLowerCase())
+    );
+    const n = filtered.length;
+    document.getElementById('deploy-count').textContent = n + ' despliegue' + (n !== 1 ? 's' : '');
+
+    if (n === 0) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="4">😕 No se encontraron despliegues para "<strong>${query}</strong>"</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = filtered.map((d, i) => `
+      <tr>
+        <td style="color:var(--muted);width:40px;">${String(i+1).padStart(2,'0')}</td>
+        <td><span class="proj-name"><span class="proj-emoji">${d.emoji}</span>${highlight(d.name, query)}</span></td>
+        <td class="link-cell deploy-link"><a href="${d.url}" target="_blank" rel="noopener">🚀 ${highlight(shortUrl(d.url), query)}</a></td>
+        <td><span class="live-dot">EN VIVO</span></td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('proj-search').addEventListener('input', e => renderProjects(e.target.value));
+  document.getElementById('deploy-search').addEventListener('input', e => renderDeployments(e.target.value));
+
+  renderProjects();
+  renderDeployments();
+
+  function animateCounter(el, target) {
+    let n = 0;
+    const step = Math.ceil(target / 20);
+    const t = setInterval(() => {
+      n = Math.min(n + step, target);
+      el.textContent = n;
+      if (n >= target) clearInterval(t);
+    }, 40);
+  }
+  setTimeout(() => {
+    animateCounter(document.getElementById('stat-projects'), DATA.projects.length);
+    animateCounter(document.getElementById('stat-deploys'), DATA.deployments.length);
+  }, 600);
+</script>
+</body>
+</html>
